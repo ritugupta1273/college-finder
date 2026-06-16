@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Verify OTP - College Finder</title>
+    <style>
+        body { background: #f6f5f7; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; font-family: sans-serif; }
+        .verify-box { background: #fff; border-radius: 10px; shadow: 0 14px 28px rgba(0,0,0,0.25); padding: 40px; width: 400px; text-align: center; }
+        input { background-color: #eee; border: none; padding: 12px 15px; margin: 8px 0; width: 100%; box-sizing: border-box; }
+        button { border-radius: 20px; border: none; background-color: #4facfe; color: #fff; padding: 12px 45px; cursor: pointer; text-transform: uppercase; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="verify-box">
+        <h2>Verify OTP</h2>
+        <p>Enter the 6-digit code from the alert</p>
+        
+        <form action="reset_final.php" method="POST">
+            <!-- Hidden field for email -->
+            <input type="hidden" name="email" id="email_input">
+            
+            <input type="text" name="otp" placeholder="6-Digit OTP" required maxlength="6">
+            <input type="password" name="new_password" placeholder="New Password" required>
+            
+            <button type="submit">Update Password</button>
+        </form>
+    </div>
+
+    <script>
+        // Automatically pull email from URL[cite: 3]
+        const urlParams = new URLSearchParams(window.location.search);
+        const email = urlParams.get('email');
+        if (email) {
+            document.getElementById('email_input').value = email;
+        }
+    </script>
+</body>
+</html>

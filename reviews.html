@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Student Reviews — College Finder India</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap"
+      rel="stylesheet"
+    />
+   <link rel="stylesheet" href="style (2).css" />
+  </head>
+  <body>
+    <header class="site-header glass-header" id="top">
+      <nav class="navbar container">
+        <a href="index.html" class="brand">
+          <span class="brand-mark"><i data-lucide="graduation-cap"></i></span>
+          <span class="brand-text">College Finder</span>
+        </a>
+
+        <button
+          type="button"
+          class="nav-toggle"
+          id="navToggle"
+          aria-label="Open menu"
+          aria-expanded="false"
+        >
+          <i data-lucide="menu"></i>
+        </button>
+
+        <div class="nav-panel" id="navPanel">
+          <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="reviews.html" class="is-active">Student Reviews</a></li>
+            <li class="nav-dropdown" id="coursesDropdown">
+              <button type="button" class="nav-dropdown__trigger" id="coursesTrigger" aria-haspopup="true" aria-expanded="false">
+                Courses
+                <i data-lucide="chevron-down"></i>
+              </button>
+              <div class="mega-menu mega-menu--courses" id="coursesMenu" role="menu">
+                <button type="button" class="mega-cat" data-stream="engineering" role="menuitem">
+                  <i data-lucide="cpu"></i><span>Engineering</span>
+                </button>
+                <button type="button" class="mega-cat" data-stream="medical" role="menuitem">
+                  <i data-lucide="stethoscope"></i><span>Medical</span>
+                </button>
+                <button type="button" class="mega-cat" data-stream="management" role="menuitem">
+                  <i data-lucide="briefcase"></i><span>Management</span>
+                </button>
+                <button type="button" class="mega-cat" data-stream="law" role="menuitem">
+                  <i data-lucide="scale"></i><span>Law</span>
+                </button>
+                <button type="button" class="mega-cat" data-stream="arts" role="menuitem">
+                  <i data-lucide="palette"></i><span>Arts</span>
+                </button>
+              </div>
+            </li>
+          </ul>
+          <a href="login.html" class="btn-login">Login</a>
+        </div>
+      </nav>
+    </header>
+
+    <main class="page-main">
+      <section class="page-hero page-hero--reviews">
+        <div class="container">
+          <p class="page-eyebrow">Real students · Real campuses</p>
+          <h1>Student Reviews</h1>
+          <p class="page-lead">
+            Hear from learners across India about hostels, faculty, placements, and campus
+            culture — from Delhi University colleges to IITs and private universities.
+          </p>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container">
+          <div class="reviews-bento">
+            <article class="review-card">
+              <div class="review-card__stars" aria-hidden="true">★★★★★</div>
+              <p class="review-card__text">
+                “The mess timings and hostel rules were a shock at first, but the fests and
+                society culture at my Delhi college made up for it. North Campus feels like a
+                small town inside the city.”
+              </p>
+              <footer class="review-card__meta">
+                <strong>Aditi Sharma</strong>
+                <span>B.A. (Hons) Economics · Delhi</span>
+              </footer>
+            </article>
+
+            <article class="review-card">
+              <div class="review-card__stars" aria-hidden="true">★★★★☆</div>
+              <p class="review-card__text">
+                “I moved from Indore to Bengaluru for engineering. Traffic is real, but lab
+                facilities and peer groups here push you harder than school ever did. Internship
+                drives start early — be ready.”
+              </p>
+              <footer class="review-card__meta">
+                <strong>Rahul Verma</strong>
+                <span>B.E. Computer Science · Bengaluru</span>
+              </footer>
+            </article>
+
+            <article class="review-card">
+              <div class="review-card__stars" aria-hidden="true">★★★★★</div>
+              <p class="review-card__text">
+                “Kolkata’s metro + affordable PGs made my parents less worried about cost.
+                Campus is strict about attendance but professors actually know your name.”
+              </p>
+              <footer class="review-card__meta">
+                <strong>Priya Ghosh</strong>
+                <span>B.Sc. Physics · Kolkata</span>
+              </footer>
+            </article>
+
+            <article class="review-card">
+              <div class="review-card__stars" aria-hidden="true">★★★★★</div>
+              <p class="review-card__text">
+                “Medical college life is nothing like TV — night duties and theory backlog are
+                constant. But seniors helped me survive first year; batch bonding is everything.”
+              </p>
+              <footer class="review-card__meta">
+                <strong>Arjun Nair</strong>
+                <span>MBBS · South India</span>
+              </footer>
+            </article>
+
+            <article class="review-card">
+              <div class="review-card__stars" aria-hidden="true">★★★★☆</div>
+              <p class="review-card__text">
+                “I chose a private university in Tamil Nadu for placements. Training cell is
+                aggressive; sometimes it feels like a factory, but I got two offers before final year.”
+              </p>
+              <footer class="review-card__meta">
+                <strong>Kavya Krishnan</strong>
+                <span>B.Tech IT · Vellore region</span>
+              </footer>
+            </article>
+
+            <article class="review-card">
+              <div class="review-card__stars" aria-hidden="true">★★★★★</div>
+              <p class="review-card__text">
+                “Mumbai’s rent hurts, but internships in BKC and Lower Parel are worth it.
+                My SRCC timetable is packed — societies run like startups.”
+              </p>
+              <footer class="review-card__meta">
+                <strong>Siddharth Mehta</strong>
+                <span>B.Com (Hons) · Mumbai</span>
+              </footer>
+            </article>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-grid">
+        <div class="footer-col">
+          <h3>Popular Exams</h3>
+          <ul class="footer-list">
+            <li><a href="#">JEE Main &amp; Advanced</a></li>
+            <li><a href="#">NEET UG</a></li>
+            <li><a href="#">CAT</a></li>
+            <li><a href="#">CUET UG / PG</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h3>Quick Links</h3>
+          <ul class="footer-list">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="reviews.html">Student Reviews</a></li>
+            <li><a href="careers.html">Career Roadmaps</a></li>
+            <li><a href="index.html#trending">Trending Colleges</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h3>Contact Us</h3>
+          <ul class="footer-contact">
+            <li><i data-lucide="mail"></i> <a href="mailto:support@collegefinder.in">support@collegefinder.in</a></li>
+            <li><i data-lucide="phone"></i> <span>1800-XXX-XXXX (Toll-free)</span></li>
+            <li><i data-lucide="map-pin"></i> <span>New Delhi, India</span></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h3>Social Media</h3>
+          <div class="social-row">
+            <a href="#" aria-label="YouTube"><i data-lucide="youtube"></i></a>
+            <a href="#" aria-label="Instagram"><i data-lucide="instagram"></i></a>
+            <a href="#" aria-label="LinkedIn"><i data-lucide="linkedin"></i></a>
+            <a href="#" aria-label="X"><i data-lucide="twitter"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <div class="container">
+          <p>&copy; <span id="year"></span> College Finder India. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+
+    <div class="modal modal--wide" id="streamModal" role="dialog" aria-modal="true" aria-labelledby="streamModalTitle" hidden>
+      <div class="modal__backdrop" data-close-stream></div>
+      <div class="modal__card">
+        <button type="button" class="modal__close" id="streamModalClose" aria-label="Close"><i data-lucide="x"></i></button>
+        <h2 id="streamModalTitle" class="modal__title">Best Colleges</h2>
+        <p class="modal__intro" id="streamModalIntro"></p>
+        <ul class="stream-list" id="streamCollegeList"></ul>
+        <p class="modal__hint"><a href="index.html#trending">Open home — Trending</a> for compare &amp; details.</p>
+        <button type="button" class="btn-secondary" data-close-stream>Close</button>
+      </div>
+    </div>
+
+    <div class="overlay-full" id="collegeOverlay" hidden>
+      <div class="overlay-full__backdrop" data-close-college-overlay></div>
+      <div class="overlay-full__panel">
+        <button type="button" class="overlay-full__close" id="collegeOverlayClose" aria-label="Close"><i data-lucide="x"></i></button>
+        <div class="overlay-full__content" id="collegeOverlayContent"></div>
+      </div>
+    </div>
+
+    <button type="button" class="back-to-top" id="backToTop" aria-label="Back to top" hidden>
+      <i data-lucide="chevron-up"></i>
+    </button>
+
+    <script src="https://cdn.jsdelivr.net/npm/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>

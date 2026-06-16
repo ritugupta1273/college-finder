@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comprehensive Indian Course Finder</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --bg-main: #f8fafc;
+            --bg-card: #ffffff;
+            --text-dark: #1e293b;
+            --text-muted: #64748b;
+            --accent: #059669;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-dark);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+
+        /* Filter Section Layout */
+        .filter-wrapper {
+            background: var(--bg-card);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            align-items: flex-end;
+            margin-bottom: 30px;
+        }
+
+        .filter-group {
+            flex: 1;
+            min-width: 180px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .filter-group.wide {
+            flex: 1.5;
+            min-width: 250px;
+        }
+
+        .filter-group label {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .filter-group select, 
+        .filter-group input[type="range"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 15px;
+            background: white;
+        }
+
+        .btn-search {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            height: 42px;
+        }
+
+        .btn-search:hover {
+            background-color: var(--primary-hover);
+        }
+
+        /* Two-Column App Layout Grid */
+        .app-layout {
+            display: grid;
+            grid-template-columns: 7fr 3fr;
+            gap: 24px;
+        }
+
+        @media (max-width: 768px) {
+            .app-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Main Display Results Columns */
+        .results-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            align-content: start;
+        }
+
+        .course-card {
+            background: var(--bg-card);
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 20px;
+            position: relative;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .badges-container {
+            display: flex;
+            gap: 6px;
+            position: absolute;
+            top: 15px;
+            right: 15px;
+        }
+
+        .badge {
+            background: #eff6ff;
+            color: var(--primary);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .badge.level-badge {
+            background: #f1f5f9;
+            color: #475569;
+        }
+
+        .course-card h3 {
+            font-size: 18px;
+            margin-top: 15px;
+            margin-bottom: 4px;
+            padding-right: 120px;
+        }
+
+        .sub-category-text {
+            font-size: 13px;
+            color: var(--primary);
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .course-info {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+
+        .college-tag {
+            margin-top: 15px;
+            padding-top: 10px;
+            border-top: 1px dashed #e2e8f0;
+            color: var(--accent);
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        /* Top Courses Sidebar Style Rules */
+        .sidebar {
+            background: var(--bg-card);
+            border-top: 4px solid var(--primary);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            height: fit-content;
+        }
+
+        .sidebar h2 {
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+
+        .sidebar-list {
+            list-style: none;
+        }
+
+        .sidebar-item {
+            padding: 12px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .sidebar-item:last-child {
+            border-bottom: none;
+        }
+
+        .sidebar-item div {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .sidebar-item span {
+            font-size: 12px;
+            color: var(--text-muted);
+            display: block;
+            margin-top: 2px;
+        }
+
+        .no-results {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 40px;
+            color: var(--text-muted);
+            background: var(--bg-card);
+            border-radius: 10px;
+            border: 1px dashed #cbd5e1;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Smart Course Finder</h1>
+            <p>Explore Bachelor & Master Degree programs along with Top College selections</p>
+        </header>
+
+        <!-- Dynamic Filter Section Layout Component -->
+        <section class="filter-wrapper">
+            <div class="filter-group">
+                <label for="field-select">Field Option</label>
+                <select id="field-select">
+                    <option value="ALL">All Streams</option>
+                    <option value="Engineering">Engineering</option>
+                    <option value="Management">Management</option>
+                    <option value="Medical">Medical</option>
+                    <option value="Arts">Arts</option>
+                    <option value="Data Science">Data Science</option>
+                    <option value="Law">Law</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="level-select">Degree Level</label>
+                <select id="level-select">
+                    <option value="ALL">All Levels</option>
+                    <option value="Bachelor">Bachelor Degree</option>
+                    <option value="Master">Master Degree</option>
+                </select>
+            </div>
+
+            <div class="filter-group wide">
+                <label for="fee-range">Max Annual Fees: <span id="fee-display">₹15,00,000</span></label>
+                <input type="range" id="fee-range" min="20000" max="2500000" step="25000" value="1500000">
+            </div>
+
+            <button class="btn-search" id="search-btn">Filter Courses</button>
+        </section>
+
+        <!-- App Display Screen Grid Framework Split -->
+        <main class="app-layout">
+            
+            <!-- Target Course Display Column Component -->
+            <section class="results-section" id="results-container">
+                <!-- Javascript will dynamically inject cards here -->
+            </section>
+
+            <!-- Sidebar Column View Component -->
+            <aside class="sidebar">
+                <h2>🔥 Trending Programs</h2>
+                <ul class="sidebar-list" id="sidebar-container">
+                    <!-- Javascript will dynamically populate trending lists here -->
+                </ul>
+            </aside>
+
+        </main>
+    </div>
+
+    <script>
+        // Formatted Master Database covering all your user inputs explicitly
+        const coursesDatabase = [
+            // ==========================================
+            // 1. ENGINEERING & TECHNOLOGY
+            // ==========================================
+            { id: 1, name: "B.Tech / B.E.", field: "Engineering", subCategory: "Computer Science & Engineering (CSE)", level: "Bachelor", duration: 4.0, fees: 250000, isTop: true, college: "IIT Bombay" },
+            { id: 2, name: "B.Tech / B.E.", field: "Engineering", subCategory: "Mechanical Engineering", level: "Bachelor", duration: 4.0, fees: 220000, isTop: false, college: "IIT Delhi" },
+            { id: 3, name: "B.Tech / B.E.", field: "Engineering", subCategory: "Civil Engineering", level: "Bachelor", duration: 4.0, fees: 190000, isTop: false, college: "IIT Roorkee" },
+            { id: 4, name: "B.Tech / B.E.", field: "Engineering", subCategory: "Electrical & Electronics Engineering (EEE)", level: "Bachelor", duration: 4.0, fees: 230000, isTop: false, college: "BITS Pilani" },
+            { id: 5, name: "B.Tech / B.E.", field: "Engineering", subCategory: "Aerospace Engineering", level: "Bachelor", duration: 4.0, fees: 280000, isTop: true, college: "IIT Kanpur" },
+            { id: 6, name: "B.Tech / B.E.", field: "Engineering", subCategory: "Chemical Engineering", level: "Bachelor", duration: 4.0, fees: 200000, isTop: false, college: "IIT Kharagpur" },
+            { id: 7, name: "B.Tech / B.E.", field: "Engineering", subCategory: "Biomedical Engineering", level: "Bachelor", duration: 4.0, fees: 180000, isTop: false, college: "VIT Vellore" },
+            { id: 8, name: "B.S. in Engineering", field: "Engineering", subCategory: "General Engineering (US Track)", level: "Bachelor", duration: 4.0, fees: 2400000, isTop: false, college: "MIT (USA)" },
+            { id: 9, name: "M.Tech / M.E.", field: "Engineering", subCategory: "Advanced Specialization Roles", level: "Master", duration: 2.0, fees: 160000, isTop: true, college: "IIT Madras" },
+            { id: 10, name: "M.S. (Master of Science)", field: "Engineering", subCategory: "Research Focused Tracks", level: "Master", duration: 2.0, fees: 140000, isTop: false, college: "IISc Bangalore" },
+            { id: 11, name: "Master of Engineering Management (MEM)", field: "Engineering", subCategory: "Engineering & Business Bridge", level: "Master", duration: 2.0, fees: 1800000, isTop: true, college: "Dartmouth College (USA)" },
+
+            // ==========================================
+            // 2. MANAGEMENT & BUSINESS
+            // ==========================================
+            { id: 12, name: "BBA", field: "Management", subCategory: "Business Administration", level: "Bachelor", duration: 3.0, fees: 150000, isTop: false, college: "Shaheed Sukhdev College (DU)" },
+            { id: 13, name: "BMS", field: "Management", subCategory: "Management Studies", level: "Bachelor", duration: 3.0, fees: 120000, isTop: false, college: "St. Xavier's College, Mumbai" },
+            { id: 14, name: "B.Com", field: "Management", subCategory: "Finance & Accounting", level: "Bachelor", duration: 3.0, fees: 60000, isTop: false, college: "SRCC, New Delhi" },
+            { id: 15, name: "B.Com", field: "Management", subCategory: "Marketing Strategy", level: "Bachelor", duration: 3.0, fees: 55000, isTop: false, college: "LSR, New Delhi" },
+            { id: 16, name: "MBA", field: "Management", subCategory: "General Management & Strategy", level: "Master", duration: 2.0, fees: 1200000, isTop: true, college: "IIM Ahmedabad" },
+            { id: 17, name: "MBA", field: "Management", subCategory: "Finance & Banking Operations", level: "Master", duration: 2.0, fees: 1150000, isTop: true, college: "IIM Calcutta" },
+            { id: 18, name: "MBA", field: "Management", subCategory: "Human Resource Management (HR)", level: "Master", duration: 2.0, fees: 1100000, isTop: false, college: "XLRI Jamshedpur" },
+            { id: 19, name: "MiM (Master in Management)", field: "Management", subCategory: "Fresh Graduate Track", level: "Master", duration: 1.5, fees: 2200000, isTop: false, college: "HEC Paris (France)" },
+            { id: 20, name: "M.Sc. in Corporate Finance", field: "Management", subCategory: "Academic Business Studies", level: "Master", duration: 2.0, fees: 450000, isTop: false, college: "London School of Economics" },
+
+            // ==========================================
+            // 3. MEDICAL & HEALTHCARE
+            // ==========================================
+            { id: 21, name: "MBBS / MD", field: "Medical", subCategory: "Clinical & General Surgery", level: "Bachelor", duration: 5.5, fees: 140000, isTop: true, college: "AIIMS New Delhi" },
+            { id: 22, name: "BDS", field: "Medical", subCategory: "Dental Surgery", level: "Bachelor", duration: 5.0, fees: 220000, isTop: false, college: "Maulana Azad Dental College" },
+            { id: 23, name: "B.Pharm", field: "Medical", subCategory: "Pharmaceutical Sciences", level: "Bachelor", duration: 4.0, fees: 95000, isTop: false, college: "Jamia Hamdard, New Delhi" },
+            { id: 24, name: "B.Sc. in Nursing", field: "Medical", subCategory: "Critical Care Patient Nursing", level: "Bachelor", duration: 4.0, fees: 35000, isTop: false, college: "CMC Vellore" },
+            { id: 25, name: "B.Sc. in Physiotherapy", field: "Medical", subCategory: "Rehabilitation Medicine", level: "Bachelor", duration: 4.5, fees: 70000, isTop: false, college: "IPGMER Kolkata" },
+            { id: 26, name: "MD / MS", field: "Medical", subCategory: "Pediatrics & Child Health", level: "Master", duration: 3.0, fees: 280000, isTop: true, college: "PGIMER Chandigarh" },
+            { id: 27, name: "MD / MS", field: "Medical", subCategory: "Cardiology & Vascular Medicine", level: "Master", duration: 3.0, fees: 300000, isTop: true, college: "JIPMER Puducherry" },
+            { id: 28, name: "MD / MS", field: "Medical", subCategory: "Orthopedics & Bone Surgery", level: "Master", duration: 3.0, fees: 290000, isTop: false, college: "KMC Manipal" },
+            { id: 29, name: "M.Pharm", field: "Medical", subCategory: "Advanced Pharmaceutics", level: "Master", duration: 2.0, fees: 120000, isTop: false, college: "NIPER Mohali" },
+            { id: 30, name: "MPH (Master of Public Health)", field: "Medical", subCategory: "Healthcare Policy & Community", level: "Master", duration: 2.0, fees: 180000, isTop: false, college: "TISS Mumbai" },
+            { id: 31, name: "MHA", field: "Medical", subCategory: "Healthcare Administration", level: "Master", duration: 2.0, fees: 240000, isTop: false, college: "Apollo Institute, Hyderabad" },
+
+            // ==========================================
+            // 4. DATA SCIENCE & ARTIFICIAL INTELLIGENCE
+            // ==========================================
+            { id: 32, name: "B.Sc. / B.S.", field: "Data Science", subCategory: "Data Science & Statistics", level: "Bachelor", duration: 3.0, fees: 80000, isTop: false, college: "IIT Madras (Online/On-Campus)" },
+            { id: 33, name: "B.Tech", field: "Data Science", subCategory: "Data Science & Artificial Intelligence", level: "Bachelor", duration: 4.0, fees: 260000, isTop: true, college: "IIT Hyderabad" },
+            { id: 34, name: "BCA", field: "Data Science", subCategory: "Data Analytics Track", level: "Bachelor", duration: 3.0, fees: 110000, isTop: false, college: "Christ University, Bengaluru" },
+            { id: 35, name: "M.Sc.", field: "Data Science", subCategory: "Data Science & Business Analytics", level: "Master", duration: 2.0, fees: 210000, isTop: true, college: "Chennai Mathematical Institute (CMI)" },
+            { id: 36, name: "M.Tech", field: "Data Science", subCategory: "Data Science & Machine Learning", level: "Master", duration: 2.0, fees: 170000, isTop: true, college: "ISI Kolkata" },
+            { id: 37, name: "MCA", field: "Data Science", subCategory: "Advanced Data Science Architecture", level: "Master", duration: 2.0, fees: 140000, isTop: false, college: "NIT Trichy" },
+
+            // ==========================================
+            // 5. LAW
+            // ==========================================
+            { id: 38, name: "LL.B.", field: "Law", subCategory: "Core Legal Judicial Systems", level: "Bachelor", duration: 3.0, fees: 45000, isTop: false, college: "Faculty of Law, DU" },
+            { id: 39, name: "BA LL.B. (Integrated)", field: "Law", subCategory: "Arts + Law Studies", level: "Bachelor", duration: 5.0, fees: 250000, isTop: true, college: "NLSIU Bengaluru" },
+            { id: 40, name: "BBA LL.B. (Integrated)", field: "Law", subCategory: "Management + Law Studies", level: "Bachelor", duration: 5.0, fees: 240000, isTop: true, college: "NALSAR Hyderabad" },
+            { id: 41, name: "B.Com LL.B. (Integrated)", field: "Law", subCategory: "Commerce + Law Studies", level: "Bachelor", duration: 5.0, fees: 210000, isTop: false, college: "GNLU Gandhinagar" },
+            { id: 42, name: "B.Sc. LL.B. (Integrated)", field: "Law", subCategory: "Science + Law Systems", level: "Bachelor", duration: 5.0, fees: 220000, isTop: false, college: "NLU Jodhpur" },
+            { id: 43, name: "J.D. (Juris Doctor)", field: "Law", subCategory: "International Advocacy (Post-Grad)", level: "Bachelor", duration: 3.0, fees: 3200000, isTop: false, college: "Harvard Law School (USA)" },
+            { id: 44, name: "LL.M.", field: "Law", subCategory: "Corporate Law Specialization", level: "Master", duration: 1.0, fees: 180000, isTop: true, college: "NLU Delhi" },
+            { id: 45, name: "Master of Legal Studies (MLS)", field: "Law", subCategory: "Legal Frameworks for Non-Lawyers", level: "Master", duration: 2.0, fees: 350000, isTop: false, college: "Symbiosis Law School, Pune" },
+
+            // ==========================================
+            // 6. ARTS & HUMANITIES
+            // ==========================================
+            { id: 46, name: "B.A.", field: "Arts", subCategory: "English Literature / Psychology / Political Science", level: "Bachelor", duration: 3.0, fees: 40000, isTop: true, college: "Lady Shri Ram College, Delhi" },
+            { id: 47, name: "BFA", field: "Arts", subCategory: "Fine Arts, Painting & Sculpture", level: "Bachelor", duration: 4.0, fees: 55000, isTop: false, college: "Sir J.J. School of Art, Mumbai" },
+            { id: 48, name: "B.Des", field: "Arts", subCategory: "Fashion, UI/UX & Interior Design", level: "Bachelor", duration: 4.0, fees: 310000, isTop: true, college: "NID Ahmedabad" },
+            { id: 49, name: "M.A.", field: "Arts", subCategory: "Advanced Humanities & Social Sciences", level: "Master", duration: 2.0, fees: 25000, isTop: false, college: "JNU, New Delhi" },
+            { id: 50, name: "MFA / M.Des", field: "Arts", subCategory: "Terminal Fine Arts & Advanced Design", level: "Master", duration: 2.0, fees: 220000, isTop: true, college: "IDC School of Design, IIT Bombay" }
+        ];
+
+        // Target Selectors
+        const fieldSelect = document.getElementById('field-select');
+        const levelSelect = document.getElementById('level-select');
+        const feeRange = document.getElementById('fee-range');
+        const feeDisplay = document.getElementById('fee-display');
+        const searchBtn = document.getElementById('search-btn');
+        const resultsContainer = document.getElementById('results-container');
+        const sidebarContainer = document.getElementById('sidebar-container');
+
+        // Format system using standard Indian Rupee Currency Syntax Structure
+        function formatRupee(val) {
+            return '₹' + parseInt(val).toLocaleString('en-IN');
+        }
+
+        // Handle Realtime Filter UI Value Adjustments 
+        feeRange.addEventListener('input', (e) => {
+            feeDisplay.textContent = formatRupee(e.target.value);
+        });
+
+        // Load Sidebar Components Matching (is_top_course = TRUE)
+        function renderSidebar() {
+            const topCourses = coursesDatabase.filter(c => c.isTop);
+            sidebarContainer.innerHTML = topCourses.map(course => `
+                <li class="sidebar-item">
+                    <div>⭐ ${course.name}</div>
+                    <span>${course.level} • ${course.subCategory}</span>
+                </li>
+            `).join('');
+        }
+
+        // Main Evaluation Search Query Loop Routine
+        function searchCourses() {
+            const selectedField = fieldSelect.value;
+            const selectedLevel = levelSelect.value;
+            const maxBudget = parseInt(feeRange.value);
+
+            // Core Filtering Block Matrix
+            const filtered = coursesDatabase.filter(course => {
+                const matchesField = (selectedField === 'ALL' || course.field === selectedField);
+                const matchesLevel = (selectedLevel === 'ALL' || course.level === selectedLevel);
+                const matchesFees = (course.fees <= maxBudget);
+                return matchesField && matchesLevel && matchesFees;
+            });
+
+            resultsContainer.innerHTML = '';
+
+            if (filtered.length === 0) {
+                resultsContainer.innerHTML = `
+                    <div class="no-results">
+                        <h3>No Degree Paths Match Your Filters</h3>
+                        <p>Try lifting your Maximum Annual Fees slider or changing stream allocations.</p>
+                    </div>`;
+                return;
+            }
+
+            // Map dataset directly into modern flex cards array allocations
+            resultsContainer.innerHTML = filtered.map(course => `
+                <div class="course-card">
+                    <div class="badges-container">
+                        <span class="badge level-badge">${course.level}</span>
+                        <span class="badge">${course.field}</span>
+                    </div>
+                    <div>
+                        <h3>${course.name}</h3>
+                        <div class="sub-category-text">Spec: ${course.subCategory}</div>
+                        <p class="course-info"><strong>⏳ Program Term:</strong> ${course.duration} Years</p>
+                        <p class="course-info"><strong>💸 Academic Fees:</strong> ${formatRupee(course.fees)} / year</p>
+                    </div>
+                    <div class="college-tag">🏫 Premier Campus: ${course.college}</div>
+                </div>
+            `).join('');
+        }
+
+        // Init Triggers
+        searchBtn.addEventListener('click', searchCourses);
+        renderSidebar();
+        searchCourses();
+    </script>
+</body>
+</html>

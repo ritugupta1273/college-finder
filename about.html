@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>About Us — College Finder India</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style (2).css" />
+  </head>
+  <body>
+    <header class="site-header glass-header" id="top">
+      <nav class="navbar container">
+        <a href="index.html" class="brand">
+          <span class="brand-mark"><i data-lucide="graduation-cap"></i></span>
+          <span class="brand-text">College Finder</span>
+        </a>
+
+        <button
+          type="button"
+          class="nav-toggle"
+          id="navToggle"
+          aria-label="Open menu"
+          aria-expanded="false"
+        >
+          <i data-lucide="menu"></i>
+        </button>
+
+        <div class="nav-panel" id="navPanel">
+          <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html" class="is-active">About</a></li>
+            <li><a href="reviews.html">Student Reviews</a></li>
+            <li class="nav-dropdown" id="coursesDropdown">
+              <button type="button" class="nav-dropdown__trigger" id="coursesTrigger" aria-haspopup="true" aria-expanded="false">
+                Courses
+                <i data-lucide="chevron-down"></i>
+              </button>
+              <div class="mega-menu mega-menu--courses" id="coursesMenu" role="menu">
+                <button type="button" class="mega-cat" data-stream="engineering" role="menuitem">
+                  <i data-lucide="cpu"></i><span>Engineering</span>
+                </button>
+                <button type="button" class="mega-cat" data-stream="medical" role="menuitem">
+                  <i data-lucide="stethoscope"></i><span>Medical</span>
+                </button>
+                <button type="button" class="mega-cat" data-stream="management" role="menuitem">
+                  <i data-lucide="briefcase"></i><span>Management</span>
+                </button>
+                <button type="button" class="mega-cat" data-stream="law" role="menuitem">
+                  <i data-lucide="scale"></i><span>Law</span>
+                </button>
+                <button type="button" class="mega-cat" data-stream="arts" role="menuitem">
+                  <i data-lucide="palette"></i><span>Arts</span>
+                </button>
+              </div>
+            </li>
+          </ul>
+          <a href="login.html" class="btn-login">Login</a>
+        </div>
+      </nav>
+    </header>
+
+    <main class="page-main">
+      <section class="page-hero page-hero--about">
+        <div class="container">
+          <p class="page-eyebrow">Our mission</p>
+          <h1>Helping every Indian student make a confident college choice</h1>
+          <p class="page-lead">
+            From metro cities to tier-2 towns, we believe transparent information on
+            colleges, exams, and costs should be accessible in English and familiar
+            Indian contexts — not buried in forums and PDFs.
+          </p>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container">
+          <div class="bento bento-about">
+            <article class="about-block about-block--main">
+              <h2><i data-lucide="target"></i> What we stand for</h2>
+              <p>
+                College Finder India is built for students navigating JEE, NEET, CUET,
+                state entrances, and direct admissions. We aggregate rankings, cut-offs,
+                and campus insights so families can compare options without guesswork.
+              </p>
+              <p>
+                Whether you aim for an IIT, a state medical college, or a strong private
+                university, our goal is the same: clarity at every step.
+              </p>
+            </article>
+            <article class="about-block">
+              <h2><i data-lucide="users"></i> Who we serve</h2>
+              <p>
+                School students in Class 10–12, drop-year aspirants, working professionals
+                upskilling via distance learning, and parents planning fee budgets across
+                India’s diverse cities.
+              </p>
+            </article>
+            <article class="about-block about-block--highlight">
+              <h2>By the numbers</h2>
+              <p class="stat-big">1M+</p>
+              <p class="stat-label">Students helped with college &amp; course discovery</p>
+              <p class="stat-note">Cumulative sessions across web &amp; partner counsellors (India).</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section--alt">
+        <div class="container narrow">
+          <header class="section-head">
+            <h2>India-first approach</h2>
+            <p>Rankings (NIRF, QS), state quotas, scholarships, and hostel realities — in one place.</p>
+          </header>
+          <ul class="check-list">
+            <li><i data-lucide="check-circle-2"></i> Exam calendars aligned with NTA &amp; state boards</li>
+            <li><i data-lucide="check-circle-2"></i> City-wise cost bands for rent &amp; food</li>
+            <li><i data-lucide="check-circle-2"></i> Peer reviews from students across regions</li>
+          </ul>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-grid">
+        <div class="footer-col">
+          <h3>Popular Exams</h3>
+          <ul class="footer-list">
+            <li><a href="#">JEE Main &amp; Advanced</a></li>
+            <li><a href="#">NEET UG</a></li>
+            <li><a href="#">CAT</a></li>
+            <li><a href="#">CUET UG / PG</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h3>Quick Links</h3>
+          <ul class="footer-list">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="reviews.html">Student Reviews</a></li>
+            <li><a href="careers.html">Career Roadmaps</a></li>
+            <li><a href="index.html#trending">Trending Colleges</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h3>Contact Us</h3>
+          <ul class="footer-contact">
+            <li><i data-lucide="mail"></i> <a href="mailto:support@collegefinder.in">support@collegefinder.in</a></li>
+            <li><i data-lucide="phone"></i> <span>1800-XXX-XXXX (Toll-free)</span></li>
+            <li><i data-lucide="map-pin"></i> <span>New Delhi, India</span></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h3>Social Media</h3>
+          <div class="social-row">
+            <a href="#" aria-label="YouTube"><i data-lucide="youtube"></i></a>
+            <a href="#" aria-label="Instagram"><i data-lucide="instagram"></i></a>
+            <a href="#" aria-label="LinkedIn"><i data-lucide="linkedin"></i></a>
+            <a href="#" aria-label="X"><i data-lucide="twitter"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <div class="container">
+          <p>&copy; <span id="year"></span> College Finder India. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+
+    <div class="modal modal--wide" id="streamModal" role="dialog" aria-modal="true" aria-labelledby="streamModalTitle" hidden>
+      <div class="modal__backdrop" data-close-stream></div>
+      <div class="modal__card">
+        <button type="button" class="modal__close" id="streamModalClose" aria-label="Close"><i data-lucide="x"></i></button>
+        <h2 id="streamModalTitle" class="modal__title">Best Colleges</h2>
+        <p class="modal__intro" id="streamModalIntro"></p>
+        <ul class="stream-list" id="streamCollegeList"></ul>
+        <p class="modal__hint"><a href="index.html#trending">Open home — Trending</a> for compare &amp; details.</p>
+        <button type="button" class="btn-secondary" data-close-stream>Close</button>
+      </div>
+    </div>
+
+    <div class="overlay-full" id="collegeOverlay" hidden>
+      <div class="overlay-full__backdrop" data-close-college-overlay></div>
+      <div class="overlay-full__panel">
+        <button type="button" class="overlay-full__close" id="collegeOverlayClose" aria-label="Close"><i data-lucide="x"></i></button>
+        <div class="overlay-full__content" id="collegeOverlayContent"></div>
+      </div>
+    </div>
+
+    <button type="button" class="back-to-top" id="backToTop" aria-label="Back to top" hidden>
+      <i data-lucide="chevron-up"></i>
+    </button>
+
+    <script src="https://cdn.jsdelivr.net/npm/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>

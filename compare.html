@@ -1,0 +1,516 @@
+<?php
+// ==========================================
+// 1. PHP DATABASE BACKEND LAYER
+// ==========================================
+$servername = "localhost";
+$username = "root";
+$password = ""; // Default XAMPP password is empty
+$dbname = "finder_db";
+
+// Connect to MySQL
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+// Check Connection
+if ($conn->connect_error) {
+    die("Database connection failed: " . $conn->connect_error);
+}
+
+// Fetch all college names to populate the searchable datalists dynamically
+$dropdown_sql = "SELECT name FROM colleges ORDER BY name ASC";
+$dropdown_result = $conn->query($dropdown_sql);
+$all_colleges = [];
+if ($dropdown_result) {
+    while ($row = $dropdown_result->fetch_assoc()) {
+        $all_colleges[] = $row;
+    }
+} else {
+    die("Error reading from table: " . $conn->error);
+}
+
+// Get requested Names from URL parameters, fallback to the first two available colleges
+$name1 = isset($_GET['name1']) ? $_GET['name1'] : (isset($all_colleges[0]['name']) ? $all_colleges[0]['name'] : '');
+$name2 = isset($_GET['name2']) ? $_GET['name2'] : (isset($all_colleges[1]['name']) ? $all_colleges[1]['name'] : '');
+
+// SQL Query targeting your exact column names using 'WHERE name = ?'
+$sql = "SELECT name, state, type, fee, pkg, cutoff, goal, roi, link, description, 
+               NIRF_rank, highest_package, lowest_package, recruiters, entrance_exam, 
+               has_hostel, research_center, sports_facilities, area_acres 
+        FROM colleges 
+        WHERE name = ?";
+
+// Fetch Data for College 1
+$stmt = $conn->prepare($sql);
+if (!$stmt) {
+    die("SQL Error: One or more column names might not match your database. Details: " . $conn->error);
+}
+
+$stmt->bind_param("s", $name1);
+$stmt->execute();
+$res1 = $stmt->get_result()->fetch_assoc();
+
+// Fetch Data for College 2
+$stmt->bind_param("s", $name2);
+$stmt->execute();
+$res2 = $stmt->get_result()->fetch_assoc();
+
+$stmt->close();
+$conn->close();
+
+// Fallback arrays if database rows are completely empty
+$fallback = ["name" => "Not Found", "state" => "-", "type" => "-", "description" => "No record exists."];
+$college1_json = json_encode($res1 ? $res1 : $fallback);
+$college2_json = json_encode($res2 ? $res2 : $fallback);
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>College Compare - All in One</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-blue: #2d4a8a;
+            --accent-blue: #4069c2;
+            --bg-gradient: linear-gradient(180deg, #f0f4ff 0%, #ffffff 100%);
+            --card-bg: #ffffff;
+            --tag-bg: #f0f4f9;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-soft: #e2e8f0;
+            --success-green: #059669;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', Roboto, sans-serif;
+            background-color: #f8fafc;
+            background-image: var(--bg-gradient);
+            background-attachment: fixed;
+            margin: 0;
+            padding: 40px 20px;
+            color: var(--text-main);
+        }
+
+        .container { max-width: 1100px; margin: auto; }
+
+        .compare-header-box {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+            margin-bottom: 30px;
+            border: 1px solid var(--border-soft);
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .header-top h2 {
+            font-size: 24px;
+            color: var(--primary-blue);
+            margin: 0;
+        }
+
+        .college-selection-grid {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+        }
+
+        .college-card {
+            flex: 1;
+            border: 1px solid var(--border-soft);
+            border-radius: 12px;
+            overflow: hidden;
+            background: white;
+            min-height: 200px;
+            transition: transform 0.2s;
+        }
+
+        .card-banner { height: 60px; background: #eef2ff; position: relative; }
+        
+        .college-logo {
+            width: 54px; height: 54px; border-radius: 12px;
+            background: white; border: 1px solid var(--border-soft);
+            position: absolute; bottom: -27px; left: 50%;
+            transform: translateX(-50%);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 11px; font-weight: bold; color: var(--primary-blue);
+            text-align: center; padding: 2px;
+        }
+
+        .card-content { padding: 35px 15px 20px; text-align: center; }
+        .card-content h4 { margin: 5px 0; font-size: 15px; color: var(--text-main); }
+        .card-content p { font-size: 12px; color: var(--text-muted); margin: 4px 0; text-transform: uppercase; }
+        .course-tag { 
+            color: var(--accent-blue); 
+            font-weight: 600; 
+            font-size: 11px;
+            background: var(--tag-bg);
+            padding: 4px 10px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-top: 8px;
+        }
+
+        .add-card {
+            border: 2px dashed var(--border-soft);
+            background: #fafbfd;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .search-container { width: 85%; margin: 5px 0; }
+        .search-container label { font-size: 10px; font-weight: bold; color: var(--text-muted); display: block; text-align: left; margin-bottom: 4px;}
+        
+        /* Stylized searchable input boxes */
+        .search-container input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-soft);
+            border-radius: 8px;
+            font-size: 13px;
+            background-color: white;
+            color: var(--text-main);
+            outline: none;
+            box-sizing: border-box;
+        }
+        .search-container input:focus {
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 3px rgba(64, 105, 194, 0.15);
+        }
+
+        .vs-divider {
+            width: 32px; height: 32px; background: #334155; color: white;
+            border-radius: 50%; display: flex; align-items: center;
+            justify-content: center; font-size: 10px; font-weight: bold;
+        }
+
+        .btn-compare {
+            display: block; width: 220px; margin: 25px auto 0;
+            background: var(--primary-blue); color: white;
+            border: none; padding: 14px; border-radius: 8px;
+            font-weight: bold; cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .btn-compare:hover { background: var(--accent-blue); }
+
+        .comparison-layout { display: grid; grid-template-columns: 260px 1fr; gap: 25px; }
+        .sidebar { background: white; border-radius: 12px; padding: 10px 0; border: 1px solid var(--border-soft); height: fit-content; position: sticky; top: 20px; }
+        
+        .sidebar-item {
+            padding: 14px 24px; font-size: 14px; color: var(--text-muted);
+            cursor: pointer; border-left: 4px solid transparent;
+            transition: all 0.2s; display: flex; align-items: center; gap: 10px;
+        }
+        
+        .sidebar-item i { width: 18px; text-align: center; }
+
+        .sidebar-item.active {
+            color: var(--primary-blue);
+            border-left-color: var(--primary-blue);
+            font-weight: 600;
+            background: #f0f7ff;
+        }
+
+        .main-content { background: white; border-radius: 12px; border: 1px solid var(--border-soft); overflow: hidden; }
+        .section-title { padding: 20px; border-bottom: 1px solid var(--border-soft); background: #fcfdfe; }
+        
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 18px; border: 1px solid var(--border-soft); font-size: 14px; line-height: 1.5; }
+        th { background: #f8fafc; color: var(--primary-blue); font-weight: 700; text-align: center; }
+        .row-label { background: #f8fafc; font-weight: 600; width: 25%; color: var(--text-muted); text-align: left; }
+        td { text-align: center; }
+
+        .highlight-text { color: var(--success-green); font-weight: bold; }
+        .link-text { color: var(--accent-blue); text-decoration: none; font-weight: 600; }
+        .link-text:hover { text-decoration: underline; }
+        ul.cell-list { text-align: left; margin: 0; padding-left: 18px; font-size: 13px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <section class="compare-header-box">
+        <div class="header-top">
+            <h2>College Comparison</h2>
+            <i class="fas fa-ellipsis-h" style="color:#cbd5e1; cursor:pointer;"></i>
+        </div>
+
+        <div class="college-selection-grid">
+            <!-- Dynamic College Header Column 1 -->
+            <div class="college-card">
+                <div class="card-banner" style="background: #1e293b;">
+                    <div class="college-logo" id="logo-1">-</div>
+                </div>
+                <div class="card-content">
+                    <h4 id="name-1">Loading...</h4>
+                    <p id="state-1">-</p>
+                    <span class="course-tag" id="type-1">-</span>
+                </div>
+            </div>
+
+            <div class="vs-divider">VS</div>
+
+            <!-- Dynamic College Header Column 2 -->
+            <div class="college-card">
+                <div class="card-banner" style="background: #2d4a8a;">
+                    <div class="college-logo" id="logo-2">-</div>
+                </div>
+                <div class="card-content">
+                    <h4 id="name-2">Loading...</h4>
+                    <p id="state-2">-</p>
+                    <span class="course-tag" id="type-2">-</span>
+                </div>
+            </div>
+
+            <!-- Searchable Dropdown Selection Card -->
+            <div class="college-card add-card">
+                <div style="font-size: 24px; color: var(--primary-blue); margin-bottom: 5px;">
+                    <i class="fas fa-search"></i>
+                </div>
+                
+                <!-- Shared Datalist definition utilized by both inputs -->
+                <datalist id="college-list">
+                    <?php foreach ($all_colleges as $college): ?>
+                        <option value="<?php echo htmlspecialchars($college['name']); ?>">
+                    <?php endforeach; ?>
+                </datalist>
+
+                <!-- College Input 1 (With Search) -->
+                <div class="search-container">
+                    <label>SEARCH COLLEGE 1</label>
+                    <input type="text" id="select-name-1" list="college-list" value="<?php echo htmlspecialchars($name1); ?>" placeholder="Type to search...">
+                </div>
+                
+                <!-- College Input 2 (With Search) -->
+                <div class="search-container">
+                    <label>SEARCH COLLEGE 2</label>
+                    <input type="text" id="select-name-2" list="college-list" value="<?php echo htmlspecialchars($name2); ?>" placeholder="Type to search...">
+                </div>
+            </div>
+        </div>
+
+        <button class="btn-compare" id="compare-trigger-btn">Run Comparison</button>
+    </section>
+
+    <div class="comparison-layout">
+        <aside class="sidebar">
+            <div class="sidebar-item active" data-target="course"><i class="fas fa-book"></i> Course Details</div>
+            <div class="sidebar-item" data-target="placement"><i class="fas fa-briefcase"></i> Placement Stats</div>
+            <div class="sidebar-item" data-target="cutoff"><i class="fas fa-chart-line"></i> Cutoff / Admission</div>
+            <div class="sidebar-item" data-target="campus"><i class="fas fa-map-marked-alt"></i> Campus Life</div>
+            <div class="sidebar-item" data-target="facility"><i class="fas fa-building"></i> Facilities</div>
+            <div class="sidebar-item" data-target="overview"><i class="fas fa-info-circle"></i> Info & Overview</div>
+        </aside>
+
+        <main class="main-content">
+            <div class="section-title">
+                <h3 id="current-title" style="margin:0; font-size: 18px;">Course Details</h3>
+            </div>
+            
+            <div class="table-section">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Parameter</th>
+                            <th id="th-title-1">College Row 1</th>
+                            <th id="th-title-2">College Row 2</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body">
+                        <!-- Fetched metrics injected here -->
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+</div>
+
+<script>
+    const tableBody = document.getElementById('table-body');
+    const titleElement = document.getElementById('current-title');
+    const sidebarItems = document.querySelectorAll('.sidebar-item');
+
+    let colData1 = <?php echo $college1_json; ?>;
+    let colData2 = <?php echo $college2_json; ?>;
+    let activeTab = 'course';
+
+    function cleanString(val) {
+        return (val === null || val === undefined || val === "" || val === 0) ? "Data Not Available" : val;
+    }
+
+    function generateList(str) {
+        if (!str || str.trim() === "") return "Data Not Available";
+        const items = str.split(',').map(i => i.trim());
+        return `<ul class="cell-list">${items.map(item => `<li>${item}</li>`).join('')}</ul>`;
+    }
+
+    function checkStatus(val) {
+        if (val == 1 || val === true || String(val).toLowerCase() === 'yes' || String(val).toLowerCase() === 'true') {
+            return `<span style="color: var(--success-green); font-weight:bold;"><i class="fas fa-check-circle"></i> Yes</span>`;
+        }
+        return `<span style="color: var(--text-muted);"><i class="fas fa-times-circle"></i> No</span>`;
+    }
+
+    function renderActiveTab(tabName) {
+        switch(tabName) {
+            case 'course':
+                tableBody.innerHTML = `
+                    <tr>
+                        <td class="row-label">NIRF Ranking</td>
+                        <td class="highlight-text">#${cleanString(colData1.NIRF_rank)}</td>
+                        <td class="highlight-text">#${cleanString(colData2.NIRF_rank)}</td>
+                    </tr>
+                    <tr>
+                        <td class="row-label">Academic Fee</td>
+                        <td>${cleanString(colData1.fee)}</td>
+                        <td>${cleanString(colData2.fee)}</td>
+                    </tr>
+                    <tr>
+                        <td class="row-label">Stream / Type</td>
+                        <td>${cleanString(colData1.type)}</td>
+                        <td>${cleanString(colData2.type)}</td>
+                    </tr>
+                    <tr>
+                        <td class="row-label">Return on Investment (ROI)</td>
+                        <td>${cleanString(colData1.roi)}</td>
+                        <td>${cleanString(colData2.roi)}</td>
+                    </tr>`;
+                break;
+            case 'placement':
+                tableBody.innerHTML = `
+                    <tr>
+                        <td class="row-label">Highest Package</td>
+                        <td style="font-weight: 700; color: var(--success-green);">${cleanString(colData1.highest_package || colData1.pkg)}</td>
+                        <td style="font-weight: 700; color: var(--success-green);">${cleanString(colData2.highest_package || colData2.pkg)}</td>
+                    </tr>
+                    <tr>
+                        <td class="row-label">Lowest Package</td>
+                        <td>${cleanString(colData1.lowest_package)}</td>
+                        <td>${cleanString(colData2.lowest_package)}</td>
+                    </tr>
+                    <tr>
+                        <td class="row-label">Prominent Recruiters</td>
+                        <td>${generateList(colData1.recruiters)}</td>
+                        <td>${generateList(colData2.recruiters)}</td>
+                    </tr>`;
+                break;
+            case 'cutoff':
+                tableBody.innerHTML = `
+                    <tr>
+                        <td class="row-label">Entrance Examination</td>
+                        <td style="font-weight:600; color:var(--primary-blue);">${cleanString(colData1.entrance_exam)}</td>
+                        <td style="font-weight:600; color:var(--primary-blue);">${cleanString(colData2.entrance_exam)}</td>
+                    </tr>
+                    <tr>
+                        <td class="row-label">Cutoff Metric Score</td>
+                        <td>${cleanString(colData1.cutoff)}</td>
+                        <td>${cleanString(colData2.cutoff)}</td>
+                    </tr>`;
+                break;
+            case 'campus':
+                tableBody.innerHTML = `
+                    <tr>
+                        <td class="row-label">Campus Area</td>
+                        <td>${cleanString(colData1.area_acres)} Acres</td>
+                        <td>${cleanString(colData2.area_acres)} Acres</td>
+                    </tr>
+                    <tr>
+                        <td class="row-label">State Hub</td>
+                        <td>${cleanString(colData1.state)}</td>
+                        <td>${cleanString(colData2.state)}</td>
+                    </tr>`;
+                break;
+            case 'facility':
+                tableBody.innerHTML = `
+                    <tr>
+                        <td class="row-label">In-Campus Hostel</td>
+                        <td>${checkStatus(colData1.has_hostel)}</td>
+                        <td>${checkStatus(colData2.has_hostel)}</td>
+                    </tr>
+                    <tr>
+                        <td class="row-label">Research Centers</td>
+                        <td>${checkStatus(colData1.research_center)}</td>
+                        <td>${checkStatus(colData2.research_center)}</td>
+                    </tr>
+                    <tr>
+                        <td class="row-label">Sports Complex</td>
+                        <td>${checkStatus(colData1.sports_facilities)}</td>
+                        <td>${checkStatus(colData2.sports_facilities)}</td>
+                    </tr>`;
+                break;
+            case 'overview':
+                tableBody.innerHTML = `
+                    <tr>
+                        <td class="row-label">Profile Description</td>
+                        <td style="text-align:left; font-size:13px; line-height:1.4;">${cleanString(colData1.description)}</td>
+                        <td style="text-align:left; font-size:13px; line-height:1.4;">${cleanString(colData2.description)}</td>
+                    </tr>
+                    <tr>
+                        <td class="row-label">Goal Focus</td>
+                        <td>${cleanString(colData1.goal)}</td>
+                        <td>${cleanString(colData2.goal)}</td>
+                    </tr>
+                    <tr>
+                        <td class="row-label">Web Link</td>
+                        <td><a href="${colData1.link}" target="_blank" class="link-text">Visit Site <i class="fas fa-external-link-alt"></i></a></td>
+                        <td><a href="${colData2.link}" target="_blank" class="link-text">Visit Site <i class="fas fa-external-link-alt"></i></a></td>
+                    </tr>`;
+                break;
+        }
+    }
+
+    function syncUIHeaders() {
+        document.getElementById('th-title-1').innerText = colData1.name;
+        document.getElementById('th-title-2').innerText = colData2.name;
+
+        document.getElementById('name-1').innerText = colData1.name;
+        document.getElementById('state-1').innerText = colData1.state;
+        document.getElementById('type-1').innerText = colData1.type;
+        document.getElementById('logo-1').innerText = colData1.name.substring(0,4).toUpperCase();
+
+        document.getElementById('name-2').innerText = colData2.name;
+        document.getElementById('state-2').innerText = colData2.state;
+        document.getElementById('type-2').innerText = colData2.type;
+        document.getElementById('logo-2').innerText = colData2.name.substring(0,4).toUpperCase();
+    }
+
+    // Handles picking new colleges by grabbing text typed or selected inside the input fields
+    document.getElementById('compare-trigger-btn').addEventListener('click', () => {
+        const name1 = encodeURIComponent(document.getElementById('select-name-1').value.trim());
+        const name2 = encodeURIComponent(document.getElementById('select-name-2').value.trim());
+        
+        if (!name1 || !name2) {
+            alert("Please select or type a valid college name in both fields.");
+            return;
+        }
+        window.location.href = `compare.php?name1=${name1}&name2=${name2}`;
+    });
+
+    sidebarItems.forEach(item => {
+        item.addEventListener('click', () => {
+            sidebarItems.forEach(i => i.classList.remove('active'));
+            item.classList.add('active');
+            
+            activeTab = item.getAttribute('data-target');
+            titleElement.innerText = item.innerText.trim();
+            renderActiveTab(activeTab);
+        });
+    });
+
+    syncUIHeaders();
+    renderActiveTab(activeTab);
+</script>
+</body>
+</html>

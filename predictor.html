@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartPath | College Predictor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --primary: #4f46e5; --text-dark: #0f172a; --text-light: #64748b; --border: #f1f5f9; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; background-color: #ffffff; color: var(--text-dark); }
+        .container { width: 100%; max-width: 600px; margin: 0 auto; padding: 40px 20px; }
+        #wizard { background: white; border-radius: 28px; padding: 32px; border: 1px solid var(--border); box-shadow: 0 10px 30px rgba(0,0,0,0.04); }
+        .progress-bar { height: 6px; background: #f1f5f9; border-radius: 10px; margin-bottom: 25px; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--primary); transition: 0.4s; width: 0%; }
+        
+        input, select { 
+            width: 100%; padding: 16px; border-radius: 14px; border: 2px solid #f1f5f9; 
+            font-size: 16px; box-sizing: border-box; background: #f8fafc; font-family: inherit; 
+            outline: none; transition: all 0.3s ease; 
+        }
+        input:focus, select:focus { border-color: var(--primary); background: #fff; box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1); }
+        
+        button { padding: 16px; border-radius: 14px; border: none; cursor: pointer; font-weight: 700; width: 100%; transition: all 0.2s ease; user-select: none; outline: none; }
+        button:hover { transform: translateY(-2px); filter: brightness(1.1); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        button:active { transform: translateY(0px) scale(0.96); filter: brightness(0.9); }
+        
+        .btn-main { background: var(--primary); color: white; }
+        .btn-outline { background: white; border: 1px solid var(--border); color: var(--text-dark); }
+        .results-list { display: flex; flex-direction: column; gap: 20px; margin-top: 30px; }
+        .college-card { padding: 25px; border-radius: 24px; border: 1px solid var(--border); box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
+        .tag { font-size: 10px; padding: 4px 8px; border-radius: 6px; color: white; font-weight: 800; text-transform: uppercase; margin-bottom: 8px; display: inline-block; }
+        .safe { background: #10b981; }
+        .no-results { text-align: center; padding: 40px; color: var(--text-light); }
+        .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
+        .detail-item { background: #f8fafc; padding: 10px; border-radius: 10px; font-size: 13px; }
+        [hidden] { display: none !important; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div id="landing">
+        <div style="text-align: center; padding: 50px 0;">
+            <h1 style="font-size: 40px; margin-bottom: 10px;">Find your future.</h1>
+            <p style="color: var(--text-light); margin-bottom: 30px;">Discover Indian colleges based on your preference.</p>
+            <button class="btn-main" onclick="startWizard()">Start Prediction</button>
+        </div>
+    </div>
+
+    <div id="wizard" hidden>
+        <div class="progress-bar"><div id="fill" class="progress-fill"></div></div>
+        <h2 id="q-title" style="margin-bottom: 20px;"></h2>
+        <div id="q-content"></div>
+        <div style="margin-top: 25px; display: flex; gap: 10px;">
+            <button id="back-btn" class="btn-outline" style="flex:1" onclick="prevStep()">Back</button>
+            <button id="next-btn" class="btn-main" style="flex:2" onclick="handleNext()">Continue</button>
+        </div>
+    </div>
+
+    <div id="dashboard" hidden>
+        <h2 style="text-align: center;">Top Matches for You</h2>
+        <p id="filter-info" style="text-align: center; font-size: 14px; color: var(--text-light); margin-top: -15px;"></p>
+        <div id="results-list" class="results-list"></div>
+        <button class="btn-outline" style="margin-top: 30px;" onclick="location.reload()">Reset Search</button>
+    </div>
+</div>
+
+<script>
+    let DB = [];
+    let step = 0;
+    let profile = { state: "", ownership: "", type: "", score: null, budget: 1000000 };
+
+    const indiaStates = [
+        "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh", "Goa", "Gujarat", 
+        "Haryana", "Himachal Pradesh", "Jharkhand", "Karnataka", "Kerala", "Madhya Pradesh", 
+        "Maharashtra", "Manipur", "Meghalaya", "Mizoram", "Nagaland", "Odisha", "Punjab", 
+        "Rajasthan", "Sikkim", "Tamil Nadu", "Telangana", "Tripura", "Uttar Pradesh", 
+        "Uttarakhand", "West Bengal", "Delhi", "Chandigarh", "Puducherry"
+    ];
+
+    const questions = [
+        { title: "Which state are you interested in?", key: "state", type: "datalist", options: indiaStates },
+        { title: "College Category", key: "ownership", type: "select", options: ["Government", "Private", "Any"] },
+        { title: "Field of Study", key: "type", type: "select", options: ["Engineering", "Management", "Medical", "Arts", "Design"] },
+        { title: "Entrance Score (0-100)", key: "score", type: "number" },
+        { title: "Max Annual Fee Budget", key: "budget", type: "range", min: 20000, max: 1500000, step: 10000 }
+    ];
+
+    // Formats raw currency values and converts single-digit values to Lakhs
+    const formatINR = (v) => {
+        if (v === null || v === undefined || v === "" || v === 0) return "Data Not Available";
+        let numericValue = Number(v);
+        
+        // Handles database values saved as small metrics (e.g., 6 or 9) instead of large raw amounts
+        if (numericValue < 100 && numericValue > 0) {
+            return "₹" + numericValue.toFixed(2) + " Lakhs";
+        }
+        return "₹" + numericValue.toLocaleString('en-IN');
+    };
+
+    // Converts missing or placeholder values to 'Data Not Available'
+    // Converts text configurations into standardized text titles (e.g. Medium)
+    const cleanCutoffValue = (val) => {
+        if (val === null || val === undefined || val === "") {
+            return "Data Not Available";
+        }
+
+        let stringVal = String(val).trim();
+
+        // If data contains categorical level designations (High, Medium, Low)
+        if (isNaN(stringVal) && stringVal.toLowerCase() !== 'null') {
+            return stringVal.charAt(0).toUpperCase() + stringVal.slice(1).toLowerCase();
+        }
+
+        if (stringVal === "0" || stringVal === "0%") {
+            return "Data Not Available";
+        }
+        
+        return stringVal.includes("%") ? stringVal : stringVal + "%";
+    };
+
+    async function startWizard() {
+        try {
+            const response = await fetch('get_colleges.php');
+            DB = await response.json();
+            if(DB.error) { alert(DB.error); return; }
+            document.getElementById("landing").hidden = true;
+            document.getElementById("wizard").hidden = false;
+            render();
+        } catch (e) { alert("Connection Error: Check if get_colleges.php is working correctly."); }
+    }
+
+    function render() {
+        const q = questions[step];
+        document.getElementById("q-title").innerText = q.title;
+        document.getElementById("fill").style.width = ((step + 1) / questions.length * 100) + "%";
+        
+        let html = "";
+        if (q.type === "datalist") {
+            html = `<input type="text" id="input-val" list="state-list" placeholder="Search state..." value="${profile.state}">
+                    <datalist id="state-list">${q.options.map(o => `<option value="${o}">`).join('')}</datalist>`;
+        } else if (q.type === "select") {
+            html = `<select id="input-val">${q.options.map(o => `<option value="${o}" ${profile[q.key] === o ? 'selected' : ''}>${o}</option>`).join('')}</select>`;
+        } else if (q.type === "number") {
+            html = `<input type="number" id="input-val" placeholder="Enter score (0-100)" min="0" max="100" value="${profile.score || ''}">`;
+        } else if (q.type === "range") {
+            html = `<input type="range" id="input-val" min="${q.min}" max="${q.max}" step="${q.step}" value="${profile.budget}" oninput="this.nextElementSibling.innerText = formatINR(this.value)">
+                    <div style="text-align:center; font-weight:bold; margin-top:10px;">${formatINR(profile.budget)}</div>`;
+        }
+        document.getElementById("q-content").innerHTML = html;
+        document.getElementById("back-btn").style.visibility = step === 0 ? "hidden" : "visible";
+        if(document.getElementById("input-val") && q.type !== "range") document.getElementById("input-val").focus();
+    }
+
+    function handleNext() {
+        const input = document.getElementById("input-val");
+        const val = input.value;
+        const q = questions[step];
+
+        if (q.key === "score" && (val === "" || val < 0 || val > 100)) {
+            alert("Please enter a valid score between 0 and 100.");
+            return;
+        }
+        if(!val && q.type !== "range") { alert("Please provide an answer."); return; }
+        
+        profile[q.key] = (q.type === "number" || q.type === "range") ? Number(val) : val;
+        if (step < questions.length - 1) { step++; render(); } else { showResults(); }
+    }
+
+    function prevStep() { if (step > 0) { step--; render(); } }
+
+    function showResults() {
+        document.getElementById("wizard").hidden = true;
+        document.getElementById("dashboard").hidden = false;
+        document.getElementById("filter-info").innerText = `Showing 75%+ matches in ${profile.state}`;
+
+        const results = DB.filter(c => c.state.toLowerCase() === profile.state.toLowerCase())
+            .map(c => {
+                let s = 100;
+                
+                // Normalizes cutoff strings for standard baseline algorithm comparison logic
+                let targetCutoff = isNaN(c.cutoff) ? 50 : Number(c.cutoff);
+                if (profile.score < targetCutoff) s -= (targetCutoff - profile.score) * 5;
+                
+                let numericFee = Number(c.fee);
+                let actualFee = numericFee < 100 ? numericFee * 100000 : numericFee;
+                if (actualFee > profile.budget) s -= 20;
+                
+                if (c.type !== profile.type) s -= 25;
+                if (profile.ownership !== "Any" && c.ownership && c.ownership !== profile.ownership) s -= 30;
+                return { ...c, match: Math.min(Math.max(s, 0), 100) };
+            })
+            .filter(c => c.match >= 75)
+            .sort((a, b) => b.match - a.match);
+
+        const list = document.getElementById("results-list");
+        if (results.length === 0) {
+            list.innerHTML = `<div class="no-results"><h3>No high-match colleges found.</h3><p>Try increasing your budget or score to see more options.</p></div>`;
+        } else {
+            list.innerHTML = results.map(c => `
+                <div class="college-card">
+                    <span class="tag safe">Excellent Match</span>
+                    <h3 style="margin:5px 0;">${c.name}</h3>
+                    <small style="color:var(--text-light)">${c.type} • ${c.state}</small>
+                    <div class="detail-grid">
+                        <div class="detail-item"><b>Package:</b> ₹${c.pkg} LPA</div>
+                        <div class="detail-item"><b>Fees:</b> ${formatINR(c.fee)}</div>
+                        <div class="detail-item"><b>Cutoff:</b> ${cleanCutoffValue(c.cutoff)}</div>
+                        <div class="detail-item"><b>Match:</b> ${Math.round(c.match)}%</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+    }
+</script>
+</body>
+</html>

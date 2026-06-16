@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>College Finder — Discover Colleges &amp; Courses Across India</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style (2).css" />
+  </head>
+  <body>
+    <header class="site-header glass-header" id="top">
+      <nav class="navbar container">
+        <a href="index.php" class="brand">
+          <span class="brand-mark"> <img src="./images/logo.png" alt=""></span>
+          <span class="brand-text">College Finder</span>
+        </a>
+
+        <button
+          type="button"
+          class="nav-toggle"
+          id="navToggle"
+          aria-label="Open menu"
+          aria-expanded="false"
+        >
+          <i data-lucide="menu"></i>
+        </button>
+
+        <div class="nav-panel" id="navPanel">
+          <ul class="nav-links">
+            <li><a href="index.html" class="is-active">Home</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="reviews.html">Student Reviews</a></li>
+            <li class="nav-dropdown" id="coursesDropdown">
+              <button
+                type="button"
+                class="nav-dropdown__trigger"
+                id="coursesTrigger"
+                aria-haspopup="true"
+                aria-controls="coursesMenu"
+                aria-expanded="false"
+              >
+                Courses
+                <i data-lucide="chevron-down"></i>
+              </button>
+              <div class="mega-menu mega-menu--courses" id="coursesMenu" role="menu">
+                <button type="button" class="mega-cat" data-stream="engineering" role="menuitem">
+                  <i data-lucide="cpu"></i>
+                  <span>Engineering</span>
+                </button>
+                <button type="button" class="mega-cat" data-stream="medical" role="menuitem">
+                  <i data-lucide="stethoscope"></i>
+                  <span>Medical</span>
+                </button>
+                <button type="button" class="mega-cat" data-stream="management" role="menuitem">
+                  <i data-lucide="briefcase"></i>
+                  <span>Management</span>
+                </button>
+                <button type="button" class="mega-cat" data-stream="law" role="menuitem">
+                  <i data-lucide="scale"></i>
+                  <span>Law</span>
+                </button>
+                <button type="button" class="mega-cat" data-stream="arts" role="menuitem">
+                  <i data-lucide="palette"></i>
+                  <span>Arts</span>
+                </button>
+              </div>
+            </li>
+          </ul>
+          <a href="login.html" class="btn-login">Login</a>
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero" id="home" aria-label="Campus highlights">
+        <div class="hero-slider" id="heroSlider">
+          <div class="hero-slide is-active" data-slide="0"></div>
+          <div class="hero-slide" data-slide="1"></div>
+          <div class="hero-slide" data-slide="2"></div>
+          <div class="hero-slide" data-slide="3"></div>
+          <div class="hero-overlay"></div>
+        </div>
+
+        <div class="hero-inner container">
+          <div class="hero-copy">
+            <p class="hero-eyebrow">India’s trusted college discovery platform</p>
+            <h1>Find the right college. Build your future.</h1>
+            <p class="hero-lead">
+              From JEE to NEET, IITs to liberal arts — explore options that match your
+              goals and budget.
+            </p>
+          </div>
+
+          <form class="hero-search glass-panel" id="heroSearchForm" role="search">
+            <label class="sr-only" for="collegeSearch">Search colleges</label>
+            <div class="hero-search__field">
+              <i data-lucide="search"></i>
+              <input
+                type="search"
+                id="collegeSearch"
+                name="q"
+                placeholder="Search 50,000+ Colleges"
+                autocomplete="off"
+              />
+            </div>
+            <button type="submit" class="btn-primary">
+              <span>Search</span>
+              <i data-lucide="arrow-right"></i>
+            </button>
+          </form>
+
+          <div class="slider-controls">
+            <button type="button" class="slider-btn" id="sliderPrev" aria-label="Previous slide">
+              <i data-lucide="chevron-left"></i>
+            </button>
+            <div class="slider-dots" id="sliderDots"></div>
+            <button type="button" class="slider-btn" id="sliderNext" aria-label="Next slide">
+              <i data-lucide="chevron-right"></i>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section--results" id="search-results" hidden>
+        <div class="container">
+          <header class="section-head section-head--left">
+            <h2 id="searchResultsTitle">Search results</h2>
+            <p id="searchResultsHint">Colleges matching your query.</p>
+          </header>
+          <div class="search-results-grid" id="searchResultsGrid"></div>
+        </div>
+      </section>
+
+      <section class="section" id="boards">
+        <div class="container">
+          <header class="section-head">
+            <h2>Top Boards</h2>
+            <p>Recognised boards shaping higher education pathways in India.</p>
+          </header>
+          <div class="bento bento-boards">
+            <article class="bento-card bento-card--wide">
+              <div class="bento-card__icon"><i data-lucide="building-2"></i></div>
+              <h3>CBSE</h3>
+              <p>Central Board of Secondary Education — nationwide curriculum aligned with competitive exams.</p>
+            </article>
+            <article class="bento-card">
+              <div class="bento-card__icon"><i data-lucide="book-open"></i></div>
+              <h3>ICSE</h3>
+              <p>Indian Certificate of Secondary Education — strong English &amp; balanced subjects.</p>
+            </article>
+            <article class="bento-card">
+              <div class="bento-card__icon"><i data-lucide="globe"></i></div>
+              <h3>NIOS</h3>
+              <p>National Institute of Open Schooling — flexible learning for working students &amp; dropouts.</p>
+            </article>
+            <article class="bento-card bento-card--tall">
+              <div class="bento-card__icon"><i data-lucide="map-pin"></i></div>
+              <h3>State Boards</h3>
+              <p>Maharashtra, Tamil Nadu, Karnataka &amp; more — regional languages plus state-level entrance focus.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+
+      <section class="section section--alt" id="explore-programs">
+        <div class="container">
+          <header class="section-header">
+            <h1>Explore Programs</h1>
+            <div class="filter-wrapper">
+              <div class="filter-container" id="filterBar">
+                <button class="filter-btn active" type="button">All</button>
+                <button class="filter-btn" type="button">BE/B.Tech</button>
+                <button class="filter-btn" type="button">MBA/PGDM</button>
+                <button class="filter-btn" type="button">MBBS</button>
+                <button class="filter-btn" type="button">ME/M.Tech</button>
+                <button class="filter-btn" type="button">B.Sc</button>
+                <button class="filter-btn" type="button">BA</button>
+                <button class="filter-btn" type="button">B.Com</button>
+                <button class="filter-btn" type="button">BCA</button>
+                <button class="filter-btn" type="button">BBA/BMS</button>
+                <button class="filter-btn" type="button">B.Sc (Nursing)</button>
+              </div>
+              <button class="next-btn" type="button" aria-label="Scroll course filters">➔</button>
+            </div>
+          </header>
+
+          <div class="card-grid" id="cardGrid">
+            <div class="card" data-category="All">
+              <div class="card-content">
+                <h3>Ranking</h3>
+                <p>College ranked based on real data</p>
+                <div class="tag-group">
+                  <span class="tag">NIRF - #1</span>
+                  <span class="tag">Indiatoday - 1815</span>
+                </div>
+                <a href="https://www.nirfindia.org/" target="_blank" rel="noopener noreferrer" class="card-link">Top Ranked Colleges in India ›</a>
+              </div>
+              <img src="https://cdn-icons-png.flaticon.com/512/3112/3112946.png" alt="Ranking" class="card-icon">
+            </div>
+
+            <div class="card" data-category="MBA/PGDM BE/B.Tech">
+              <div class="card-content">
+                <h3>Find Colleges</h3>
+                <p>Discover 19000+ colleges via preferences</p>
+                <div class="tag-group">
+                  <span class="tag">Best MBA</span>
+                  <span class="tag">Best BTech</span>
+                </div>
+                <a href="predictor.php" class="card-link">Discover Top Colleges ›</a>
+              </div>
+              <img src="https://cdn-icons-png.flaticon.com/512/2940/2940651.png" alt="Find" class="card-icon">
+            </div>
+
+            <div class="card comparison-trigger" data-category="All" style="cursor:pointer;">
+              <div class="card-content">
+                <h3>Compare Colleges</h3>
+                <p>Compare on the basis of rank, fees, etc.</p>
+                <div class="logos">
+                  <div class="logo-circle">M</div><span class="vs">vs</span><div class="logo-circle">D</div>
+                </div>
+                <a href="compare.php" class="card-link">Start Comparing Now ›</a>
+              </div>
+              <img src="https://cdn-icons-png.flaticon.com/512/2436/2436636.png" alt="Compare" class="card-icon">
+            </div>
+
+            <div class="card" data-category="B.Com B.Sc BA BCA">
+              <div class="card-content">
+                <h3>Exams</h3>
+                <p>Know more about your exams</p>
+                <div class="tag-group">
+                  <span class="tag">CUET</span> <span class="tag">JEE</span>
+                </div>
+                <a href="#" class="card-link">Check All Entrance Exams ›</a>
+              </div>
+              <img src="https://cdn-icons-png.flaticon.com/512/201/201614.png" alt="Exams" class="card-icon">
+            </div>
+
+            <div class="card predictor-trigger" data-category="MBBS BE/B.Tech MBA/PGDM" style="cursor:pointer;">
+              <div class="card-content">
+                <h3>College Predictor</h3>
+                <p>Know your college admission chances</p>
+                <div class="tag-group">
+                  <span class="tag">JEE Main</span> <span class="tag">NEET</span>
+                </div>
+                <span class="card-link">Find Your Admission Chances ›</span>
+              </div>
+              <img src="https://cdn-icons-png.flaticon.com/512/3534/3534033.png" alt="Predictor" class="card-icon">
+            </div>
+
+            <div class="card" data-category="BE/B.Tech MBA/PGDM">
+              <div class="card-content">
+                <h3>Course Finder</h3>
+                <p>Discover top courses in 2026</p>
+                <div class="tag-group">
+                  <span class="tag">968+ Courses</span>
+                </div>
+                <a href="course_finder.php" class="card-link">Get Top Courses ›</a>
+              </div>
+              <img src="https://cdn-icons-png.flaticon.com/512/2997/2997608.png" alt="Course" class="card-icon">
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="section section--alt" id="study-places">
+        <div class="container">
+          <header class="section-head">
+            <h2>Top Study Places</h2>
+            <p>Explore metros — tap for living costs, top colleges, and safety ratings.</p>
+          </header>
+          <div class="bento bento-cities" id="cityGrid">
+            <button
+              type="button"
+              class="city-tile city-tile--photo"
+              style="--city-bg: url(./images/mumbai.jpg.jpeg)"
+              data-city="Mumbai"
+              data-colleges="IIT Bombay, NMIMS, St. Xavier’s"
+              data-cost="₹30,000 – ₹38,000 / mo (PG + food)"
+              data-hub="Finance, media &amp; corporate HQs"
+              data-safety="8.2 / 10 — strong local transport; monsoon preparedness matters"
+            >
+              <span class="city-tile__name">Mumbai</span>
+              <span class="city-tile__tag">Maximum City</span>
+            </button>
+            <button
+              type="button"
+              class="city-tile city-tile--photo city-tile--accent"
+              style="--city-bg: url(https://images.unsplash.com/photo-1587474260584-136574528ed5?auto=format&amp;fit=crop&amp;w=800&amp;q=85)"
+              data-city="Delhi"
+              data-colleges="IIT Delhi, DU North Campus, NSUT"
+              data-cost="₹18,000 – ₹26,000 / mo"
+              data-hub="Coaching hub &amp; govt. jobs corridor"
+              data-safety="7.5 / 10 — vary by area; use verified PGs"
+            >
+              <span class="city-tile__name">Delhi</span>
+              <span class="city-tile__tag">Most Affordable 2026</span>
+            </button>
+            <button
+              type="button"
+              class="city-tile city-tile--photo"
+              style="--city-bg: url(https://images.unsplash.com/photo-1596176530529-78163a4f7af2?auto=format&amp;fit=crop&amp;w=800&amp;q=85)"
+              data-city="Bengaluru"
+              data-colleges="IISc, RVCE, Christ University"
+              data-cost="₹32,000 – ₹42,000 / mo"
+              data-hub="IT, startups &amp; R&amp;D"
+              data-safety="8.0 / 10 — tech campuses; plan commute"
+            >
+              <span class="city-tile__name">Bengaluru</span>
+              <span class="city-tile__tag">Tech Hub</span>
+            </button>
+            <button
+              type="button"
+              class="city-tile city-tile--photo"
+              style="--city-bg: url(https://images.unsplash.com/photo-1570168007204-dfb528c6958f?auto=format&amp;fit=crop&amp;w=800&amp;q=85)"
+              data-city="Pune"
+              data-colleges="COEP, Symbiosis, Fergusson"
+              data-cost="₹24,000 – ₹32,000 / mo"
+              data-hub="Education, IT &amp; automotive"
+              data-safety="8.4 / 10 — student-heavy zones"
+            >
+              <span class="city-tile__name">Pune</span>
+              <span class="city-tile__tag">Student city</span>
+            </button>
+            <button
+              type="button"
+              class="city-tile city-tile--photo"
+              style="--city-bg: url(https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&amp;fit=crop&amp;w=800&amp;q=85)"
+              data-city="Hyderabad"
+              data-colleges="IIT Hyderabad, IIIT, BITS Hyderabad"
+              data-cost="₹25,000 – ₹34,000 / mo"
+              data-hub="Pharma, IT &amp; defence corridor"
+              data-safety="8.1 / 10 — growing metro infrastructure"
+            >
+              <span class="city-tile__name">Hyderabad</span>
+              <span class="city-tile__tag">Emerging hub</span>
+            </button>
+            <button
+              type="button"
+              class="city-tile city-tile--photo"
+              style="--city-bg: url(./images/chennai.jpg.jpeg)"
+              data-city="Chennai"
+              data-colleges="IIT Madras, Anna University, SRM"
+              data-cost="₹22,000 – ₹30,000 / mo"
+              data-hub="Auto, IT &amp; manufacturing"
+              data-safety="8.3 / 10 — coastal metro; good local rail"
+            >
+              <span class="city-tile__name">Chennai</span>
+              <span class="city-tile__tag">Coastal metro</span>
+            </button>
+            <button
+              type="button"
+              class="city-tile city-tile--photo city-tile--accent"
+              style="--city-bg: url(./images/kolkata.jpg.jpeg)"
+              data-city="Kolkata"
+              data-colleges="Jadavpur University, IIM Calcutta, Presidency"
+              data-cost="₹16,000 – ₹24,000 / mo"
+              data-hub="Culture, law &amp; analytics"
+              data-safety="8.6 / 10 — among India’s safest metros for students"
+            >
+              <span class="city-tile__name">Kolkata</span>
+              <span class="city-tile__tag">Safest</span>
+            </button>
+            <button
+              type="button"
+              class="city-tile city-tile--photo"
+              style="--city-bg: url(./images/ahmedabad.jpg.jpeg)"
+              style="--city-bg: url(./images/ahmedabad.jpg.jpeg)"
+              data-city="Ahmedabad"
+              data-colleges="IIT Gandhinagar, NID, Ahmedabad University"
+              data-cost="₹20,000 – ₹28,000 / mo"
+              data-hub="Business, textiles &amp; startups"
+              data-safety="8.2 / 10 — planned sectors; verify summer heat prep"
+            >
+              <span class="city-tile__name">Ahmedabad</span>
+              <span class="city-tile__tag">Gujarat capital region</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="trending">
+        <div class="container">
+          <header class="section-head">
+            <h2>Trending Universities</h2>
+            <p>2026 NIRF context — compare up to three institutes side-by-side.</p>
+          </header>
+          <div class="bento bento-trending" id="trendingGrid"></div>
+        </div>
+      </section>
+
+      <section class="section section--alt" id="courses">
+        <div class="container">
+          <header class="section-head">
+            <h2>Streams &amp; roadmaps</h2>
+            <p>Explore top streams with quick details and follow a roadmap to plan your next 1-5 years.</p>
+          </header>
+          <div class="career-streams-grid" id="careerStreamsGrid">
+            <article class="career-stream-card" data-roadmap-key="engineering">
+              <div class="career-stream-card__image" style="--card-bg:url('./images/iit madras.jpg.jpeg')">
+                <span class="career-stream-card__chip">Engineering</span>
+              </div>
+              <div class="career-stream-card__body">
+                <h3>Engineering Stream</h3>
+                <p>Choose IIT/NIT/private tracks and plan JEE prep with clear milestones.</p>
+                <button type="button" class="btn-primary btn-primary--sm" data-open-roadmap="engineering">View Colleges</button>
+              </div>
+            </article>
+
+            <article class="career-stream-card" data-roadmap-key="medical">
+              <div class="career-stream-card__image" style="--card-bg:url('https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&amp;fit=crop&amp;w=900&amp;q=85')">
+                <span class="career-stream-card__chip">Medical</span>
+              </div>
+              <div class="career-stream-card__body">
+                <h3>Medical Stream</h3>
+                <p>Track NEET-focused planning and map MBBS or allied health pathways.</p>
+                <button type="button" class="btn-primary btn-primary--sm" data-open-roadmap="medical">View Colleges</button>
+              </div>
+            </article>
+
+            <article class="career-stream-card" data-roadmap-key="management">
+              <div class="career-stream-card__image" style="--card-bg:url('./images/iim ahmedabad.jpg.jpeg')">
+                <span class="career-stream-card__chip">Management</span>
+              </div>
+              <div class="career-stream-card__body">
+                <h3>Management Stream</h3>
+                <p>Build profile for BBA/IPMAT and shortlist top campuses by fit and fees.</p>
+                <button type="button" class="btn-primary btn-primary--sm" data-open-roadmap="management">View Colleges</button>
+              </div>
+            </article>
+          </div>
+
+          <article class="career-roadmap-panel" id="careerRoadmapPanel">
+            <h3 id="careerRoadmapTitle">
+              <span class="career-roadmap-title__icon"><i data-lucide="map"></i></span>
+              <span>Career Roadmap</span>
+            </h3>
+            <p id="careerRoadmapSub">Step-by-step plan from stream selection to college shortlisting.</p>
+            <ol class="career-roadmap-steps" id="careerRoadmapSteps"></ol>
+            <div class="career-college-list-wrap" id="careerCollegeListWrap" hidden>
+              <h4 id="careerCollegeListTitle">Related Colleges</h4>
+              <ul class="career-college-list" id="careerCollegeList"></ul>
+            </div>
+            <div class="career-roadmap-panel__action">
+              <a href="careers.html" class="btn-primary btn-primary--sm" id="careerRoadmapBtn">View Career Roadmap</a>
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-grid">
+        <div class="footer-col">
+          <h3>Popular Exams</h3>
+          <ul class="footer-list">
+            <li><a href="#">JEE Main &amp; Advanced</a></li>
+            <li><a href="#">NEET UG</a></li>
+            <li><a href="#">CAT</a></li>
+            <li><a href="#">CUET UG / PG</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h3>Quick Links</h3>
+          <ul class="footer-list">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="reviews.html">Student Reviews</a></li>
+            <li><a href="careers.html">Career Roadmaps</a></li>
+            <li><a href="index.html#trending">Compare Colleges</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h3>Contact Us</h3>
+          <ul class="footer-contact">
+            <li><i data-lucide="mail"></i> <a href="mailto:support@collegefinder.in">support@collegefinder.in</a></li>
+            <li><i data-lucide="phone"></i> <span>1800-XXX-XXXX (Toll-free)</span></li>
+            <li><i data-lucide="map-pin"></i> <span>New Delhi, India</span></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h3>Social Media</h3>
+          <div class="social-row">
+            <a href="#" aria-label="YouTube"><i data-lucide="youtube"></i></a>
+            <a href="#" aria-label="Instagram"><i data-lucide="instagram"></i></a>
+            <a href="#" aria-label="LinkedIn"><i data-lucide="linkedin"></i></a>
+            <a href="#" aria-label="Twitter"><i data-lucide="twitter"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <div class="container">
+          <p>&copy; <span id="year"></span> College Finder India. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+
+    <div class="modal" id="cityModal" role="dialog" aria-modal="true" aria-labelledby="cityModalTitle" hidden>
+      <div class="modal__backdrop" data-close-modal></div>
+      <div class="modal__card">
+        <button type="button" class="modal__close" id="cityModalClose" aria-label="Close">
+          <i data-lucide="x"></i>
+        </button>
+        <h2 id="cityModalTitle" class="modal__title">City</h2>
+        <dl class="modal__facts">
+          <div>
+            <dt>Top Colleges</dt>
+            <dd id="modalColleges">—</dd>
+          </div>
+          <div>
+            <dt>Avg. Living Cost</dt>
+            <dd id="modalCost">—</dd>
+          </div>
+          <div>
+            <dt>Safety (student index)</dt>
+            <dd id="modalSafety">—</dd>
+          </div>
+          <div>
+            <dt>Key Hub</dt>
+            <dd id="modalHub">—</dd>
+          </div>
+        </dl>
+      </div>
+    </div>
+
+    <div class="modal modal--wide" id="streamModal" role="dialog" aria-modal="true" aria-labelledby="streamModalTitle" hidden>
+      <div class="modal__backdrop" data-close-stream></div>
+      <div class="modal__card">
+        <button type="button" class="modal__close" id="streamModalClose" aria-label="Close">
+          <i data-lucide="x"></i>
+        </button>
+        <h2 id="streamModalTitle" class="modal__title">Best Colleges</h2>
+        <p class="modal__intro" id="streamModalIntro"></p>
+        <ul class="stream-list" id="streamCollegeList"></ul>
+        <p class="modal__hint">Use <strong>Compare</strong> on cards below (up to 3) for side-by-side fees &amp; placements.</p>
+        <button type="button" class="btn-secondary" data-close-stream>Close</button>
+      </div>
+    </div>
+
+    <div class="modal modal--wide" id="compareModal" role="dialog" aria-modal="true" aria-labelledby="compareModalTitle" hidden>
+      <div class="modal__backdrop" data-close-compare></div>
+      <div class="modal__card modal__card--scroll">
+        <button type="button" class="modal__close" id="compareModalClose" aria-label="Close">
+          <i data-lucide="x"></i>
+        </button>
+        <h2 id="compareModalTitle" class="modal__title">Compare Colleges</h2>
+        <div class="compare-table-wrap" id="compareTableWrap"></div>
+      </div>
+    </div>
+
+    <div class="overlay-full" id="collegeOverlay" hidden>
+      <div class="overlay-full__backdrop" data-close-college-overlay></div>
+      <div class="overlay-full__panel">
+        <button type="button" class="overlay-full__close" id="collegeOverlayClose" aria-label="Close">
+          <i data-lucide="x"></i>
+        </button>
+        <div class="overlay-full__content" id="collegeOverlayContent"></div>
+      </div>
+    </div>
+
+    <div class="comparison-bar" id="compareBar" aria-live="polite">
+      <div class="container comparison-bar__inner">
+        <div class="comparison-bar__info">
+          <i data-lucide="git-compare"></i>
+          <span id="compareCount">0 / 3 selected</span>
+        </div>
+        <div class="comparison-bar__names" id="compareNames"></div>
+        <div class="comparison-bar__actions">
+          <button type="button" class="btn-ghost" id="compareClear">Clear</button>
+          <button type="button" class="btn-primary btn-primary--sm" id="compareView" disabled>
+            Compare
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="toast" id="searchToast" role="status" aria-live="polite" hidden></div>
+
+    <button type="button" class="back-to-top" id="backToTop" aria-label="Back to top" hidden>
+      <i data-lucide="chevron-up"></i>
+    </button>
+
+    <script src="https://cdn.jsdelivr.net/npm/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
